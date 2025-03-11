@@ -5,3 +5,4 @@ pytest
 shortuuid
 isoweek
 pendulum
+requests
