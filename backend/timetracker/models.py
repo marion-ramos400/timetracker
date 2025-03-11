@@ -12,7 +12,7 @@ class User(AbstractUser):
 class Task(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, to_field="id", default=None)
     start_dt = models.DateTimeField()
-    creation_dt = models.DateTimeField(auto_now=True)
+    created_dt = models.DateTimeField(auto_now=True)
     hours = models.IntegerField(default=0)
     description = models.CharField(max_length=128, default="")
     project = models.CharField(
