@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 import json
 from datetime import timedelta
 
@@ -23,7 +25,20 @@ class SignUp(CreateAPIView):
     model = get_user_model()
     serializer_class = UserSerializer
 
+class LogIn(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+    def post(self, request):
+        check = {
+            'user': str(request.user),  # `django.contrib.auth.User` instance.
+            'auth': str(request.auth),  # None
+        }
+        return Response(check)
+
+
 class CreateTask(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         reqdata = request.data
         username = reqdata.get("user")
@@ -47,30 +62,34 @@ class CreateTask(APIView):
         )
 
 class GetTasks(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         reqdata = request.query_params
         month = reqdata.get("month")
         week = reqdata.get("week")
-        username = reqdata.get("user")
+        #username = reqdata.get("user")
         #add validation for month, week, and username
         #user = retrieve_user(username)
         #if user:
 
         startdt, enddt = get_datetime_range(month, week)
         out = {
-            "tasks":[], 
-            "project_totals": {},
+            "month": month,
+            "week": week,
             "week_start_dt": str(startdt),
             "week_end_dt": str(enddt - timedelta(days=1)),
-        } 
+            "tasks":[], 
+            "projects_total_hrs": {},
+        }
         for p in projects:
-            out["project_totals"][p] = 0
+            out["projects_total_hrs"][p] = 0
         tasks = Task.objects.filter(start_dt__range=(startdt, enddt))
         for t in tasks:
             tdata = TaskSerializer(t).data
             tdata["user"] = retrieve_user(userid=tdata["user"]).username
             out["tasks"].append(tdata)
-            out["project_totals"][t.project] += tdata["hours"]
+            out["projects_total_hrs"][t.project] += tdata["hours"]
         return JsonResponse(
             data=out,
             status=200
