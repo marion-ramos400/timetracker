@@ -4,12 +4,14 @@ from django.contrib.auth import get_user_model
 from rest_framework.views import APIView
 from rest_framework.generics import CreateAPIView
 from rest_framework.response import Response
-from rest_framework.authentication import BasicAuthentication
+from rest_framework.authentication import BasicAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
 import json
 from datetime import timedelta
 
 from .serializers import UserSerializer, TaskSerializer
+from .receivers import *
 from .models import Task
 from .utils import (
     retrieve_user,
@@ -21,9 +23,22 @@ class Ping(APIView):
     def get(self, request):
         return Response(data="OK", status=200)
 
-class SignUp(CreateAPIView):
-    model = get_user_model()
-    serializer_class = UserSerializer
+class SignUp(APIView):
+    def post(self, request):
+        reqdata = request.data
+        serdata = {
+            "username": reqdata.get("username"),
+            "password": reqdata.get("password")
+        }
+
+        ser = UserSerializer(data=serdata)
+        if ser.is_valid(raise_exception=True):
+            userobj = ser.save()
+            out = ser.data.copy()
+            out["token"] = str(Token.objects.get(user=userobj))
+            return JsonResponse(out, status=201)
+    #model = get_user_model()
+    #serializer_class = UserSerializer
 
 class LogIn(APIView):
     authentication_classes = [BasicAuthentication]
@@ -32,12 +47,13 @@ class LogIn(APIView):
         check = {
             'user': str(request.user),  # `django.contrib.auth.User` instance.
             'auth': str(request.auth),  # None
+            'token': str(Token.objects.get(user=request.user))
         }
         return Response(check)
 
 
 class CreateTask(APIView):
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
     def post(self, request):
         reqdata = request.data
