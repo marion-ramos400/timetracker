@@ -78,7 +78,7 @@ class CreateTask(APIView):
         )
 
 class GetTasks(APIView):
-    authentication_classes = [BasicAuthentication]
+    authentication_classes = [BasicAuthentication, TokenAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request):
         reqdata = request.query_params

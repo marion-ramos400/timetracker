@@ -13,11 +13,22 @@ function LoginSignup() {
             .then(res => {
                 console.log(res)
                 console.log(res.data)
+                if (res.status < 300) {
+                    sessionStorage.setItem('login', res.data)
+                }
             })
     }
     const login = (user, pw) => {
-        console.log(`login ${user}`)
-        console.log(`login ${pw}`)
+        axios.post(loginEndpoint, {}, {
+            auth:{username: user, password: pw} 
+        })
+            .then(res => {
+                console.log(res)
+                console.log(res.data)
+                if (res.status < 300) {
+                    sessionStorage.setItem('login', JSON.stringify(res.data))
+                }
+            })
     }
 
     function handleChangeUsername(e) {
@@ -41,7 +52,7 @@ function LoginSignup() {
             </div>
             <div className="submit-container">
                 <div className="submit" onClick={() => signup(username, password)}>Sign Up</div>
-                <div className="submit">Login</div>
+                <div className="submit" onClick={() => login(username, password)}>Login</div>
             </div>
         </div>
     )

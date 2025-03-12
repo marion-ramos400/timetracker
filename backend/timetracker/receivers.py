@@ -13,6 +13,8 @@ UserModel = get_user_model()
 
 @receiver(post_save, sender=UserModel)
 def new_user_handler(sender, instance, created, **kwargs):
+    # generate a token per user created
+    # this will be used to authenticate API operations
     if created:
         token = Token.objects.create(user=instance)
-        print(token.key)
+        #print(token.key)
