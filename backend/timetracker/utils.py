@@ -11,6 +11,13 @@ def retrieve_user(username="", userid=None):
         return UserModel.objects.get(pk=userid)
     return UserModel.objects.filter(username=username).first()
 
+def get_users_list(requestor_user):
+    userlist = UserModel.objects.all()
+    userlist = [u.username for u in userlist]
+    #put requesting user at index 0 of list
+    userlist.remove(requestor_user.username)
+    userlist.insert(0, requestor_user.username)
+    return userlist
 
 def get_datetime_range(month, week):
     curryear = datetime.now().year

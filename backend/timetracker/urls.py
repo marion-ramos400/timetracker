@@ -7,4 +7,5 @@ urlpatterns = [
     path('createtask', views.CreateTask.as_view()),
     path('gettasks', views.GetTasks.as_view()),
     path('login', views.LogIn.as_view()),
+    path('getusers', views.GetUsers.as_view()),
 ]

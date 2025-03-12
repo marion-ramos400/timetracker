@@ -2,19 +2,23 @@ import React, { useState } from "react";
 import axios from 'axios';
 import './LoginSignup.css'
 import { signupEndpoint, loginEndpoint } from "../../backendConfig";
+import {useNavigate} from 'react-router-dom'
+
 
 function LoginSignup() {
     
+    const navigate = useNavigate()
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
 
     const signup = (user, pw) => {
         axios.post(signupEndpoint, {username: user, password: pw})
             .then(res => {
-                console.log(res)
-                console.log(res.data)
                 if (res.status < 300) {
+                    //if signin success, save login data to sessionStorage
                     sessionStorage.setItem('login', res.data)
+                    //go to dashboard
+                    navigate('/dash')
                 }
             })
     }
@@ -23,10 +27,11 @@ function LoginSignup() {
             auth:{username: user, password: pw} 
         })
             .then(res => {
-                console.log(res)
-                console.log(res.data)
                 if (res.status < 300) {
+                    //if login success, save login data to sessionStorage
                     sessionStorage.setItem('login', JSON.stringify(res.data))
+                    //go to dashboard
+                    navigate('/dash')
                 }
             })
     }
