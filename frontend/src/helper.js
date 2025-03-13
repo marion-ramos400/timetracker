@@ -1,5 +1,10 @@
 
 export const getSessionToken = () => {
+    const login = sessionStorage.login 
+    if (login == undefined) {
+        return null
+    }
+
     return JSON.parse(sessionStorage.login).token
 }
 

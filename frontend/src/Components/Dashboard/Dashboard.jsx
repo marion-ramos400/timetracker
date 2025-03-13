@@ -20,17 +20,23 @@ function Dashboard() {
     const [dashName, setDashName] = useState("")
 
     useEffect(() => {
-        getUserList()
-        setDashName(
-            getLoginStorage().user
-        )        
+        const success = getUserList()
+        if (success) {
+            setDashName(
+                getLoginStorage().user
+            )        
+        }
     }, []);
 
     function getUserList() {
-        const seshtoken = getSessionToken()
+        const token = getSessionToken()
+        if (token ==  null){
+            navigate('/')
+            return false
+        }
         axios.get(getUsersEndpoint, {
             headers: {
-                Authorization: `Token ${seshtoken}`
+                Authorization: `Token ${token}`
             }
         }).then(res => {
                 if (res.status < 300) {
@@ -47,6 +53,7 @@ function Dashboard() {
                 }
             }
         )
+        return true
     }
 
 
@@ -110,7 +117,8 @@ function Dashboard() {
     }
 
     function logOut(e) {
-        sessionStorage.setItem("login", {})
+        //sessionStorage.setItem("login", {})
+        sessionStorage.clear()
         navigate('/')
 
     }
@@ -125,7 +133,7 @@ function Dashboard() {
         <div className="content">
             <h4>Hi {dashName}</h4>
             <div className="date-select">
-                <label>Month: </label><input type="month" id="month" min="2025-01" max="2025-12" onChange={handleChange} value={`2025-${String(monthd).padStart(2, "0")}`}/>
+                <label>Month: </label><input type="month" id="month" min="2025-01" max="2025-12" onChange={handleChange} defaultValue={`2025-${String(monthd).padStart(2, "0")}`}/>
                 <label className="in-label">Week: </label><select name="week" id="week" onChange={handleChange}>
                     <option value="1">1</option>
                     <option value="2">2</option>

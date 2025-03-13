@@ -1,2 +1,5 @@
-# timetracker-backend
-test push
+# timetracker
+### Clone the repository
+```
+git clone 
+```

@@ -37,6 +37,7 @@ class SignUp(APIView):
             userobj = ser.save()
             out = ser.data.copy()
             out["token"] = str(Token.objects.get(user=userobj))
+            out["user"] = userobj.username
             return JsonResponse(out, status=201)
     #model = get_user_model()
     #serializer_class = UserSerializer

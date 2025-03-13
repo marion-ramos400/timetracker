@@ -4,10 +4,13 @@ import DateTimePicker from 'react-datetime-picker'
 import axios from 'axios';
 import {createTaskEndpoint } from "../../backendConfig";
 import { getSessionToken } from "../../helper";
+import ErrorMsg from "../ErrorMsg/ErrorMsg";
 import './AddTaskModal.css'
 
 
 function AddTaskModal({isOpen, onClose}) {
+    const [isError, setIsError] = useState(false)
+    const [errorMsg, setErrorMsg] = useState("")
     if (!isOpen) {return null}
     function getProjects(){
         const projects = sessionStorage.projects.split(',')
@@ -39,6 +42,7 @@ function AddTaskModal({isOpen, onClose}) {
    
     function createTask(){
         const token = getSessionToken()
+        console.log(token)
         const projSelect = document.getElementById("project-select")
         const payload = {
             user: JSON.parse(sessionStorage.login).user,
@@ -58,14 +62,25 @@ function AddTaskModal({isOpen, onClose}) {
                     onClose()
                 }
             }
-        )
+        ).catch(error => {
+            setErrorMsg(JSON.stringify(error.response.data))
+            setIsError(true)
+        })
 
     }
 
+    function clearErrorMsg(e) {
+        setIsError(false)
+        setErrorMsg("")
+        onClose()
+    }
 
     return (
         <div className="bg-container">
             <div className="modal-container">
+                    <div className="modal-header">
+                        <ErrorMsg isOpen={isError} msg={errorMsg}/>
+                    </div>
                 <div className="inputs">
                     <div>
                         <label>Task Start Date Time: </label>
@@ -87,7 +102,7 @@ function AddTaskModal({isOpen, onClose}) {
                     </div>
                 </div>
                 <div className="modal-btn-container">
-                    <div className="modal-btn close" onClick={onClose}>Close</div>
+                    <div className="modal-btn close" onClick={clearErrorMsg}>Close</div>
                     <div className="modal-btn" onClick={createTask}>Create</div>
                 </div>
             </div>

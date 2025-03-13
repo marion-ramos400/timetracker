@@ -4,4 +4,10 @@ services:
     container_name: django-docker
     ports:
       - "8000:8000"
+  
+  react-web:
+    build: ./frontend/
+    container_name: react-docker
+    ports:
+      - "3000:3000"
 
