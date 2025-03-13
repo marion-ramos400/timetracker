@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from "react";
+import {useNavigate} from 'react-router-dom'
 import axios from 'axios';
 import { getUsersEndpoint, getTasksEndpoint, createTaskEndpoint } from "../../backendConfig";
 import { getSessionToken, getLoginStorage, clearSessionToken } from "../../helper";
@@ -7,6 +8,8 @@ import './Dashboard.css'
 import AddTaskModal from "../AddTaskModal/AddTaskModal";
 
 function Dashboard() {
+
+    const navigate = useNavigate()
     const newdt = new Date()
     const [monthd, setMonth] = useState(newdt.getMonth() + 1)
     const [weekd, setWeek] = useState(1)
@@ -106,6 +109,12 @@ function Dashboard() {
         sessionStorage.setItem("projects", projStorage)
     }
 
+    function logOut(e) {
+        sessionStorage.setItem("login", {})
+        navigate('/')
+
+    }
+
     function handleModalOpen(e) {setOpen(true)}
     function handleModalClose(e) {
         setOpen(false)
@@ -127,7 +136,7 @@ function Dashboard() {
                     {userList}
                 </select>
                 <button className="add-task" type="button" onClick={handleModalOpen}>Add Task</button>
-                <button className="logout" type="button">Logout</button>
+                <button className="logout" type="button" onClick={logOut}>Logout</button>
 
             </div>
             <div className="timesheet">

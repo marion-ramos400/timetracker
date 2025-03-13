@@ -40,7 +40,6 @@ function AddTaskModal({isOpen, onClose}) {
     function createTask(){
         const token = getSessionToken()
         const projSelect = document.getElementById("project-select")
-        console.log(projSelect.value)
         const payload = {
             user: JSON.parse(sessionStorage.login).user,
             start_dt: document.getElementById("task-datetime").value,
