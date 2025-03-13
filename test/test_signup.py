@@ -2,8 +2,9 @@
 import requests
 import json
 from config import *
+import pytest
 
-
+@pytest.mark.order1
 def test_signup_empty():
     reqdata = {
         "username": "",
@@ -16,6 +17,7 @@ def test_signup_empty():
         data=json.dumps(reqdata), headers=HEADERS)
     assert resp.status_code == 400
 
+@pytest.mark.order2
 def test_signup_new_user():
     reqdata = {
         "username": USERNAME,

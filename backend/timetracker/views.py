@@ -51,6 +51,10 @@ class LogIn(APIView):
             'auth': str(request.auth),  # None
             'token': str(Token.objects.get(user=request.user))
         }
+
+        #token_h = request.headers.get("Authorization") 
+        #if token_h and ("Token" in token_h):
+            #check["token"] = 
         return Response(check)
 
 
@@ -91,10 +95,9 @@ class GetTasks(APIView):
         if not username:
             #get user from token auth
             token_h = request.headers.get("Authorization") 
-            if token_h:
+            if token_h and ("Token" in token_h):
                 token_h = token_h.split()[1]
                 user = Token.objects.get(key=token_h).user
-                print(user)
         else:
             user = retrieve_user(username=username)
 

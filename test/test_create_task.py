@@ -3,9 +3,11 @@ import requests
 from requests.auth import HTTPBasicAuth
 import json
 from config import *
+import pytest
 
 basic_auth = HTTPBasicAuth(USERNAME, PASSWORD)
 
+@pytest.mark.order4
 def test_create_task_ok():
     test_data = {
         "user": USERNAME,
@@ -23,6 +25,7 @@ def test_create_task_ok():
     assert resp.status_code == 201
 
 
+@pytest.mark.order5
 def test_create_task_invalid_user():
     test_data = {
         "user": "somerandomunknownname",

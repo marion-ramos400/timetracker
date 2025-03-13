@@ -6,7 +6,7 @@ CREATE_TASK_ENDPOINT = BACKEND_URL + "/api/createtask"
 GETTASKS_ENDPOINT = BACKEND_URL + "/api/gettasks"
 
 # Please fillup Username, password, firstname, lastname before running test
-USERNAME = "lindamerr"
+USERNAME = "newusertest123"
 PASSWORD = "password123"
 FIRST_NAME = "Linda"
 LAST_NAME = "Mear"
