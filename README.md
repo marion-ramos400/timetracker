@@ -72,6 +72,9 @@ pytest test_signup.py
 ## Backend Endpoints:
 ##### usage on the following endpoints can be found in test/ files
 > /api/signup
+
 > /api/login
+
 > /api/createtask
+
 > /api/gettasks
