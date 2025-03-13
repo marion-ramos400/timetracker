@@ -2,7 +2,9 @@
 import React, { useState, useEffect } from "react";
 import axios from 'axios';
 import { getUsersEndpoint, getTasksEndpoint, createTaskEndpoint } from "../../backendConfig";
+import { getSessionToken, getLoginStorage, clearSessionToken } from "../../helper";
 import './Dashboard.css'
+import AddTaskModal from "../AddTaskModal/AddTaskModal";
 
 function Dashboard() {
     const newdt = new Date()
@@ -11,17 +13,18 @@ function Dashboard() {
     const [tableData, setTableData] = useState([])
     const [projectsData, setProjectsData] = useState([])
     const [userList, setUserList] = useState([])
+    const [open, setOpen] = useState(false);
+    const [dashName, setDashName] = useState("")
 
     useEffect(() => {
         getUserList()
+        setDashName(
+            getLoginStorage().user
+        )        
     }, []);
 
-    function getSeshToken() {
-        return JSON.parse(sessionStorage.login).token
-    }
-
     function getUserList() {
-        const seshtoken = getSeshToken()
+        const seshtoken = getSessionToken()
         axios.get(getUsersEndpoint, {
             headers: {
                 Authorization: `Token ${seshtoken}`
@@ -32,7 +35,6 @@ function Dashboard() {
                     setUserList(
                         resp_users.map((u, idx) => {
                             if (idx === 0) {
-                                console.log("here?")
                                 return <option value={u} selected>{u}</option>
                             }
                             else {return <option value={u}>{u}</option>}
@@ -55,7 +57,7 @@ function Dashboard() {
 
     function loadWeekTable(month, week, user) {
         //populate tasks table
-        const seshtoken = getSeshToken()
+        const seshtoken = getSessionToken()
         axios.get(getTasksEndpoint, {params: {
             month: parseInt(month),
             week: parseInt(week),
@@ -85,11 +87,13 @@ function Dashboard() {
 
     function loadProjectsTable(projHrsData) {
         let projHrsArr = []
+        let projStorage = []
         for (let key in projHrsData) {
             let item = [key, projHrsData[key]]
             projHrsArr.push(
                 item
             )
+            projStorage.push(key)
         }
         setProjectsData(
             projHrsArr.map((item) => {
@@ -99,21 +103,31 @@ function Dashboard() {
                 </tr>
             })
         )
+        sessionStorage.setItem("projects", projStorage)
+    }
+
+    function handleModalOpen(e) {setOpen(true)}
+    function handleModalClose(e) {
+        setOpen(false)
+        handleChange() 
     }
 
     return (
-        <div>
+        <div className="content">
+            <h4>Hi {dashName}</h4>
             <div className="date-select">
-                Month: <input type="month" id="month" min="2025-01" max="2025-12" onChange={handleChange} value={`2025-${String(monthd).padStart(2, "0")}`}/>
-                Week: <select name="week" id="week" onChange={handleChange}>
+                <label>Month: </label><input type="month" id="month" min="2025-01" max="2025-12" onChange={handleChange} value={`2025-${String(monthd).padStart(2, "0")}`}/>
+                <label className="in-label">Week: </label><select name="week" id="week" onChange={handleChange}>
                     <option value="1">1</option>
                     <option value="2">2</option>
                     <option value="3">3</option>
                     <option value="4">4</option>
                 </select>
-                User: <select name="user" id="user-select" onChange={handleChange}>
+                <label className="in-label">User: </label><select name="user" id="user-select" onChange={handleChange}>
                     {userList}
                 </select>
+                <button className="add-task" type="button" onClick={handleModalOpen}>Add Task</button>
+                <button className="logout" type="button">Logout</button>
 
             </div>
             <div className="timesheet">
@@ -122,7 +136,7 @@ function Dashboard() {
                         <tr>
                             <th>DateTime</th>
                             <th>Task</th>
-                            <th>Number Of Hrs</th>
+                            <th>Number Of Hours</th>
                             <th>Project</th>
                         </tr>
                     </thead>
@@ -145,6 +159,7 @@ function Dashboard() {
                     </tbody>
                 </table> 
             </div>
+            <AddTaskModal isOpen={open} onClose={handleModalClose}></AddTaskModal>
         </div>
     )
 }

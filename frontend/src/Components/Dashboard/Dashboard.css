@@ -1,0 +1,71 @@
+table,th,td {
+    border: 1px solid black;
+    border-collapse: collapse;
+}
+
+table {
+    width: 80%;
+    height: 170px;
+    table-layout: fixed;
+    text-align: center;
+}
+
+th,td {
+    padding: 15px;
+}
+
+th {
+    background: #448ee4;
+}
+
+
+.content {
+    position: absolute;
+    top:8%;
+    left:18%;
+}
+
+.date-select {
+    padding-bottom: 20px;
+}
+
+.date-select input {
+    padding-right: 16px;
+}
+
+
+label {
+    padding-right: 8px;
+}
+
+.in-label {
+    padding-left: 12px;
+}
+
+.add-task {
+    margin-left: 18px;
+    background-color: #55c233;
+    color: white;
+    border: none;
+    padding: 5px;
+    font-size: 1em;
+    height: 44px;
+    width: 6%;
+    box-shadow: 0 2px 4px darkslategray;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.logout {
+    margin-left: 18px;
+    background-color: #ff474c;
+    color: white;
+    border: none;
+    padding: 5px;
+    font-size: 1em;
+    height: 44px;
+    width: 6%;
+    box-shadow: 0 2px 4px darkslategray;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
